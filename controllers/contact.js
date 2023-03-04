@@ -17,7 +17,7 @@ const createContact = async (req, res) => {
   }
 
   //check if contact already exists
-  const contactExists = await Contact.findOne({ number });
+  const contactExists = await Contact.findOne({ number, customer_email: req.user.email });
 
   if (contactExists) {
     return res.status(401).json({ message: "Contact number already exists" });

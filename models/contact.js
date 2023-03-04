@@ -8,17 +8,16 @@ const contactSchema = new mongoose.Schema({
   number: {
     type: Number,
     required: [true, "please enter contact number"],
-    unique: true,
   },
   //   customer_id: {
   //     type: Schema.Types.ObjectId,
   //     required: true,
   //     ref: 'User'
   //   }
-  customer_email:{
+  customer_email: {
     type: String,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const Contact = new mongoose.model("Contact", contactSchema);
