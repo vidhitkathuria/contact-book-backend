@@ -17,6 +17,14 @@ const registerUser = async (req, res) => {
     return res.status(400).json({ message: "Please enter all details" });
   }
 
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //check if email is valid
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({
+      message: "Not a valid email",
+    });
+  }
+
   //check if user already exists
   const userExists = await User.findOne({ email });
   if (userExists) {
