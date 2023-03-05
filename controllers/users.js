@@ -17,7 +17,8 @@ const registerUser = async (req, res) => {
     return res.status(400).json({ message: "Please enter all details" });
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)$/;
   //check if email is valid
   if (!emailRegex.test(email)) {
     return res.status(400).json({
