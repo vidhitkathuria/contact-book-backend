@@ -1,3 +1,5 @@
+const path = require("path");
+const multer = require("multer");
 const { Contact } = require("../models/contact");
 
 const createContact = async (req, res) => {
@@ -17,7 +19,10 @@ const createContact = async (req, res) => {
   }
 
   //check if contact already exists
-  const contactExists = await Contact.findOne({ number, customer_email: req.user.email });
+  const contactExists = await Contact.findOne({
+    number,
+    customer_email: req.user.email,
+  });
 
   if (contactExists) {
     return res.status(401).json({ message: "Contact number already exists" });
@@ -38,12 +43,30 @@ const createContact = async (req, res) => {
       number: contact.number,
       message: "Contact info added succesfully",
     });
-  } else {
-    return res.status(401).json({
+  }
+
+  if (!contact) {
+    return res.status(400).json({
       message: "invalid contact details",
     });
   }
 };
+
+//add image
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/"); // specify the upload directory
+  },
+  filename: function (req, file, cb) {
+    // generate a unique filename using the original filename and current timestamp
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    const filename = file.fieldname + "-" + uniqueSuffix + ext;
+    console.log(filename);
+    cb(null, filename);
+  },
+});
+const upload = multer({ storage: storage });
 
 const getMyContacts = async (req, res) => {
   const email = req.user.email;
@@ -61,13 +84,24 @@ const deleteContact = async (req, res) => {
 
 const updateContact = async (req, res) => {
   const id = req.query.id;
-
+  const number = req.body.number;
+  if (number.toString().length !== 10) {
+    return res.status(400).json({
+      message: "number can only be of 10 digits",
+    });
+  }
   const contact = await Contact.findByIdAndUpdate(
     { _id: id },
-    { $set: { name: req.body.name, number: req.body.number } }
+    { $set: { name: req.body.name, number } }
   );
 
   res.status(200).json(contact);
 };
 
-module.exports = { createContact, getMyContacts, deleteContact, updateContact };
+module.exports = {
+  createContact,
+  getMyContacts,
+  deleteContact,
+  updateContact,
+  upload,
+};

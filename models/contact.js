@@ -4,11 +4,14 @@ const contactSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "please enter contact name"],
+    trim: true,
   },
   number: {
     type: Number,
     required: [true, "please enter contact number"],
+    trim: true,
   },
+
   //   customer_id: {
   //     type: Schema.Types.ObjectId,
   //     required: true,
@@ -17,6 +20,10 @@ const contactSchema = new mongoose.Schema({
   customer_email: {
     type: String,
     required: true,
+  },
+  photo: {
+    type: String,
+    default: "default.jpg",
   },
 });
 
